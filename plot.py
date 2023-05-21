@@ -1,35 +1,19 @@
 import matplotlib.pyplot as plt
 import numpy
 
-from numpy import ndarray
 
+class Plot:
 
-class qfplot:
-
-    def __init__(self, xlimit, ylimit, hidden):
+    def __init__(self, hidden, xlimit=10, ylimit=10):
         self.xlimit = xlimit
         self.ylimit = ylimit
         self.hidden = hidden
 
-    def calc(self, f):
-        x = numpy.linspace(-self.xlimit, self.xlimit, 200 * self.xlimit)
-        y = eval(f)  # 效率↓ 省力↑
-        if not isinstance(y, ndarray):
-            value = y
-            y = numpy.zeros(len(x))
-            y.fill(value)
-        return [x, y]
-
-    def show(self, func):
-        print(f"函数: {func}")
-
-        func = func.replace(" ", "")[func.find("=") + 1:].replace("^", "**")
-        items = self.calc(func)
-
-        # plt.title(func)
+    def init_plot(self):
         plt.figure(num=1, figsize=(self.xlimit, self.ylimit))
 
-        plt.plot(items[0], items[1], color='red', linewidth=1, linestyle='-')
+        # plt.title(func)
+
         plt.xlim(-self.xlimit, self.xlimit)
         plt.ylim(-self.ylimit, self.ylimit)
         plt.xlabel('x', loc="right")
@@ -52,4 +36,16 @@ class qfplot:
         ax.spines['left'].set_position(('data', 0))
 
         plt.grid(True)
+
+    def show_points(self, *points):
+        self.init_plot()
+        for point in points:
+            plt.plot(point[0], point[1], color='red', linewidth=1, linestyle='-')
+        plt.show()
+
+    def show_functions(self, *functions):
+        self.init_plot()
+        for f in functions:
+            points = f.calc_points()
+            plt.plot(points[0], points[1], color='red', linewidth=1, linestyle='-')
         plt.show()
